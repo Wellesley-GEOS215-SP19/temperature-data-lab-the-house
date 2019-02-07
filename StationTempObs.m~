@@ -35,10 +35,10 @@ plot(stationdata.Year, stationdata.Jan,".")
 % mean and std functions --> can you tell why? use the functions nanmean
 % and nanstd to avoid this issue.
 
-monthMean = mean(stationdata.Jan)
-monthStd = std(stationdata.Jan)
-monthMin = min(stationdata.Jan)
-monthMax = max(stationdata.Jan)
+monthMean = mean(stationdata.Jan);
+monthStd = std(stationdata.Jan);
+monthMin = min(stationdata.Jan);
+monthMax = max(stationdata.Jan);
 
 %% Calculate the annual climatology
 % Extract the monthly temperature data from the table and store it in an
@@ -48,10 +48,10 @@ tempData = table2array(stationdata(:,4:15));
 %Calculate the mean, standard deviation, minimum, and maximum temperature
 %for every month. This will be similar to what you did above for a single
 %month, but now applied over all months simultaneously.
-tempMean = nanmean(tempData)
-tempStd = nanstd(tempData)
-tempMin = min(tempData)
-tempMax = max(tempData)
+tempMean = nanmean(tempData);
+tempStd = nanstd(tempData);
+tempMin = min(tempData);
+tempMax = max(tempData);
 
 %If want to calculate these things for every year, can transpose array
 %with an apostrophe (tempData)' 
@@ -81,13 +81,13 @@ for i = 1:12
     %check to make sure you understand what is happening in this line
     %now fill the corresponding values with the climatological mean
     % --> 
-    
+    tempData(indnan,i) = tempMean(i)
     
 end
 
 %% Calculate the annual mean temperature for each year
 % --> 
-yearMean = mean(tempData)'
+yearMean = mean(tempData');
 
 %% Calculate the temperature anomaly for each year, compared to the 1981-2000 mean
 % The anomaly is the difference from the mean over some baseline period. In
@@ -98,27 +98,35 @@ yearMean = mean(tempData)'
 %Calculate the annual mean temperature over the period from 1981-2000
   %Use the find function to find rows contain data where stationdata.Year is between 1981 and 2000
 % -->
+tempPeriod = find(stationdata.Year >= 1981 & stationdata.Year <= 2000)  
   %Now calculate the mean over the full time period from 1981-2000
 % -->
+baseline = mean(yearMean(tempPeriod)) 
 
 %Calculate the annual mean temperature anomaly as the annual mean
 %temperature for each year minus the baseline mean temperature
 % -->
+anomaly = yearMean-baseline 
 
 %% Plot the annual temperature anomaly over the full observational record
 %figure(2); clf
 %Make a scatter plot with year on the x axis and the annual mean
 %temperature anomaly on the y axis
 % -->  
+plot(stationdata.Year,anomaly, '.') 
+hold on
 
 %% Smooth the data by taking a 5-year running mean of the data to plot
 %This will even out some of the variability you observe in the scatter
 %plot. There are many methods for filtering data, but this is one of the
 %most straightforward - use the function movmean for this.
 % --> 
+fiveMean = movmean(anomaly,5);
 
 %Now add a line with this smoothed data to the scatter plot
 % --> 
+plot(stationdata.Year,fiveMean) 
+
 
 %% Add and plot linear trends for whole time period, and for 1960 to today
 %Here we will use the function polyfit to calculate a linear fit to the data
@@ -127,17 +135,29 @@ yearMean = mean(tempData)'
     %use polyfit to calculate the slope and intercept of a best fit line
     %over the entire observational period
 % --> 
+pTotal = polyfit(stationdata.Year',anomaly,1)
+
+
     %also calculate the slope and intercept of a best fit line just from
     %1960 to the end of the observational period
     % Hint: start by finding the index for where 1960 is in the list of
-    % years
+    % years -> row 78
 % --> 
+transposedYear = stationdata.Year'
+pPartial = polyfit(transposedYear(78:end),anomaly(78:end),1)
 
 %Add lines for each of these linear trends on the annual temperature
 %anomaly plot (you can do this either directly using the values in P_all
 %and P_1960on, or using the polyval function). Plot each new line in a
 %different color.
 % -->
+plot(stationdata.Year,pTotal(1)*stationdata.Year+pTotal(2))
+plot(stationdata.Year,pPartial(1)*stationdata.Year+pPartial(2))
 
 %% Add a legend, axis labels, and a title to your temperature anomaly plot
 % --> 
+xlabel('Year')
+ylabel('Temperature Anomaly relative to 1981-2000')
+legend('Annual Average °C','5 year moving mean','1883-Present Average','1960-Present Average')
+title('Annual Temperature Anomaly (°C) in Hawaii 1883-2000')
+hold off
