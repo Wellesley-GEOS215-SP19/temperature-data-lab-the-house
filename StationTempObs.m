@@ -1,4 +1,4 @@
-%% Add your names in a comment here at the beginning of the code!
+%% NBB, GracieCal, KDLTP
 
 % Instructions: Follow through this code step by step, while also referring
 % to the overall instructions and questions from the lab assignment sheet.
@@ -28,15 +28,19 @@ stationlon = 157.93; %West
 % point markers rather than a line connecting each data point.
 
 % --> 
+figure (1); clf
 plot(stationdata.Year, stationdata.Jan,".")
+title('Mean January Temperature from 1883-2011 for Station 911820')
+xlabel('Year')
+ylabel('Temp (C)')
 
 % Calculate the monthly mean, minimum, maximum, and standard deviation
 % note: some of these values will come out as NaN is you use the regular
 % mean and std functions --> can you tell why? use the functions nanmean
 % and nanstd to avoid this issue.
 
-monthMean = mean(stationdata.Jan);
-monthStd = std(stationdata.Jan);
+monthMean = nanmean(stationdata.Jan);
+monthStd = nanstd(stationdata.Jan);
 monthMin = min(stationdata.Jan);
 monthMax = max(stationdata.Jan);
 
@@ -62,6 +66,8 @@ tempMax = max(tempData);
 %change from the automatic x or y axis limits.
     %figure(1); clf %taken out for previous plot
 % --> (note that this may take multiple lines of code)
+
+figure(2); clf
 plot(1:12,tempMean)
 errorbar(tempMean, tempStd)
 title('Monthly Temperature Average from 1883-2011 for Station 91182')
@@ -113,6 +119,7 @@ anomaly = yearMean-baseline ;
 %Make a scatter plot with year on the x axis and the annual mean
 %temperature anomaly on the y axis
 % -->  
+figure(3); clf
 plot(stationdata.Year,anomaly, '.') 
 hold on
 
@@ -152,7 +159,7 @@ pPartial = polyfit(transposedYear(78:end),anomaly(78:end),1);
 %different color.
 % -->
 plot(stationdata.Year,pTotal(1)*stationdata.Year+pTotal(2))
-plot(stationdata.Year,pPartial(1)*stationdata.Year+pPartial(2))
+plot(transposedYear(78:end),pPartial(1)*transposedYear(78:end)+pPartial(2))
 
 %% Add a legend, axis labels, and a title to your temperature anomaly plot
 % --> 
@@ -161,3 +168,9 @@ ylabel('Temperature Anomaly relative to 1981-2000')
 legend('Annual Average °C','5 year moving mean','1883-Present Average','1960-Present Average')
 title('Annual Temperature Anomaly (°C) in Hawaii 1883-2000')
 hold off
+
+%% Extension option (further programming practice): Calculate the annual mean temperature just for
+%the summer months and just for the winter months, and follow the same procedure as above to
+%determine the anomaly and trends over time. Are the seasonal results the same or different from
+%the results you found for the annual mean? Why might we be interested in seasonal as well as in
+%annual trends?
