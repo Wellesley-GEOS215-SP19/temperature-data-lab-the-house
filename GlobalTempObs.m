@@ -67,7 +67,6 @@ plot(years,anomaly, '.')
 title('Global Annual Temperature Anomaly Relative to 1981-2000')
 xlabel('Year')
 ylabel('Temperature (C) Different from baseline')
-legend('Annual Average °C','5 year moving mean','1883-Present Average','1960-Present Average')
 fiveMean = movmean(anomaly,5)
 plot(years,fiveMean)
 
@@ -81,4 +80,10 @@ plot(transposedYears,pTotal(1)*transposedYears+pTotal(2))
 plot(transposedYears(81:end),p1960(1)*transposedYears(81:end)+p1960(2))
 plot(transposedYears(101:end),p1980(1)*transposedYears(101:end)+p1980(2))
 %plot(transposedYears(121:end),p2000(1)*transposedYears(121:end)+p2000(2))
+
+legend('Annual Average °C', ...
+'5 year moving mean', ... 
+'Global Trend 1883-Present Average', .... 
+'Global Trend 1960-Present Average', ...
+'Global Trend 1980-Present Average')
 hold off
